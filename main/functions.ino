@@ -1,3 +1,4 @@
+int firstWifiloop=0;
 void callback(char* p_topic, byte* p_payload, unsigned int p_length) {
 
   //convert topic to string to make it easier to work with
@@ -52,16 +53,20 @@ void reconnect() {
     Serial.println(ssid);
 
     //loop while we wait for connection
-    while (WiFi.status() != WL_CONNECTED) {
+    
+    while (WiFi.status() != WL_CONNECTED && firstWifiloop<20 ) {
       delay(500);
       Serial.print(".");
+      firstWifiloop++;
+      
     }
-
+    if (WiFi.status() == WL_CONNECTED){
     //print out some more debug once connected
     Serial.println("");
     Serial.println("WiFi connected");
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
+    }
   }
 
   //make sure we are connected to WIFI before attemping to reconnect to MQTT
