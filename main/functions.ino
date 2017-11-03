@@ -79,8 +79,8 @@ void reconnect() {
 
       //if connected, subscribe to the topic(s) we want to be notified about
       //EJ: Delete "mqtt_username", and "mqtt_password" here if you are not using any
-      if (client.connect((char*) clientName.c_str(), "mqtt_username", "mqtt_password")) { //EJ: Update accordingly with your MQTT account
-        Serial.print("\tMQTT Connected");
+      if (client.connect((char*) clientName.c_str())) { //EJ: Update accordingly with your MQTT account
+        Serial.println("\tMQTT Connected");
         client.subscribe(home_cover);
 
         //EJ: Do not forget to replicate the above line if you will have more than the above number of relay switches
@@ -89,10 +89,11 @@ void reconnect() {
       //otherwise print failed for debugging
       else {
         Serial.println("\tFailed.");
-        abort();
+        break;
       }
     }
   }
+  
 }
 
 //generate unique name from MAC addr

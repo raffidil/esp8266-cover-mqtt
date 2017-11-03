@@ -6,16 +6,14 @@
 
 void callback(char* topic, byte* payload, unsigned int length);
 
-#define MQTT_SERVER "192.168.1.8"  //you MQTT IP Address
-const char* ssid = "your_SSID";
-const char* password = "psk";
+#define MQTT_SERVER "192.168.1.4"  //you MQTT IP Address
+const char* ssid = "ssid";
+const char* password = "pass";
 
 int stateUp = HIGH;
 int stateDown = HIGH;
-const int switchPin1 = D0;
-const int switchPin2 = D4;
-const int buttonUp =  D3;
-const int buttonDown =  TX;
+const int switchPin1 = D6;
+const int switchPin2 = D1;
 
 char const* home_cover = "/home/cover/set/";
 
@@ -34,6 +32,11 @@ Task buttonTask(50, TASK_FOREVER, &buttonLoop, NULL, false, &buttonSetup);
 Task mqttTask(100, TASK_FOREVER, &mqttLoop, NULL, false);
 
 void setup() {
+  Serial.begin(115200);
+  delay(200);
+  Serial.println("enter main Setup()");
+  delay(200);
+
   //initialize the switch as an output and set to LOW (off)
   pinMode(switchPin1, OUTPUT); // Relay Switch 1
   digitalWrite(switchPin1, LOW);
@@ -41,29 +44,29 @@ void setup() {
   pinMode(switchPin2, OUTPUT); // Relay Switch 2
   digitalWrite(switchPin2, LOW);
 
-
-  ArduinoOTA.setHostname("My Arduino WEMO"); // A name given to your ESP8266 module when discovering it as a port in ARDUINO IDE
-  ArduinoOTA.begin(); // OTA initialization
-
   //start the serial line for debugging
-  Serial.begin(230400);
-  delay(100);
 
   //start wifi subsystem
   WiFi.begin(ssid, password);
   //attempt to connect to the WIFI network and then connect to the MQTT server
   reconnect();
+  Serial.println("setup reconnect() done");
 
   //wait a bit before starting the main loop
-  delay(2000);
 
   // Inint task schedueler
   runner.init();
   runner.addTask(buttonTask);
+  Serial.println("button task added");
   runner.addTask(mqttTask);
-
-  mqttTask.enable();
+  Serial.println("mqtt task added");
+  delay(200);
+  
   buttonTask.enable();
+  Serial.println("buttonTask ENABLED");
+  mqttTask.enable();
+  Serial.println("mqttTask ENABLED");
+  Serial.println("end of Setup()");
 }
 
 
@@ -72,7 +75,7 @@ void loop() {
 }
 
 
-
+//fadeTask.enableIfNot();
 
 
 
